@@ -1,6 +1,6 @@
 const { Sequelize } = require("sequelize");
 
-const sequelize = new Sequelize("forum", "root", "", {
+const sequelize = new Sequelize("db_ideafund", "root", "", {
   host: "localhost",
   dialect: "mysql",
   logging: false, // Hilangkan log query di console
