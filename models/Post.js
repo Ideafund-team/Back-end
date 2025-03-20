@@ -1,23 +1,37 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../config/database");
-const User = require("./User");
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/database');
 
-const Post = sequelize.define("Post", {
-  judul: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  deskripsi: {
-    type: DataTypes.TEXT,
-    allowNull: false,
-  },
-  detail:{
-    type: DataTypes.TEXT,
-    allowNull: false,
-  }
+const Post = sequelize.define('Post', {
+    title: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    investment_amount: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    summary: {
+        type: DataTypes.TEXT,
+        allowNull: false
+    },
+    description: {
+        type: DataTypes.TEXT,
+        allowNull: false
+    },
+    image: {
+        type: DataTypes.STRING
+    },
+    location: {
+        type: DataTypes.STRING
+    },
+    investment_available: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    total_investors: {
+        type: DataTypes.JSON,
+        defaultValue: []
+    }
 });
-
-Post.belongsTo(User);
-User.hasMany(Post);
 
 module.exports = Post;
