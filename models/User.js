@@ -11,10 +11,6 @@ const User = sequelize.define("User", {
     type: DataTypes.STRING,
     allowNull: false
   },
-  confirm_password: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
   nama: {
     type: DataTypes.STRING,
     allowNull: false
@@ -29,10 +25,6 @@ const User = sequelize.define("User", {
   },
   foto_profil: {
     type: DataTypes.STRING
-  },
-  ktp: {
-    type: DataTypes.STRING,
-    allowNull: false
   },
   foto_ktp: {
     type: DataTypes.STRING

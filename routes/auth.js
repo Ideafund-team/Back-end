@@ -14,7 +14,6 @@ router.post("/register", upload.fields([{ name: "foto_profil" }, { name: "foto_k
     nama,
     alamat,
     no_hp,
-    ktp
   } = req.body;
 
   // Validasi password
@@ -30,32 +29,33 @@ router.post("/register", upload.fields([{ name: "foto_profil" }, { name: "foto_k
     return res.status(400).json({ message: "Email sudah terdaftar." });
   }
 
-  // Upload foto_profil ke Cloudinary jika ada
-  let foto_profil = null;
-  if (req.files["foto_profil"]) {
-    try {
-      const result = await cloudinary.uploader.upload(`data:image/png;base64,${req.files["foto_profil"][0].buffer.toString('base64')}`, {
-        resource_type: "image",
-        folder: "user_profiles"
-      });
-      foto_profil = result.secure_url;
-    } catch (error) {
-      return res.status(500).json({ message: "Gagal mengunggah foto profil", error: error.message });
-    }
+  // Validasi foto_ktp dan foto_profil wajib diisi
+  if (!req.files || !req.files["foto_ktp"] || !req.files["foto_profil"]) {
+    return res.status(400).json({ message: "Foto KTP dan Foto Profil wajib diunggah." });
   }
 
-  // Upload foto_ktp ke Cloudinary jika ada
+  // Upload foto_profil ke Cloudinary
+  let foto_profil = null;
+  try {
+    const result = await cloudinary.uploader.upload(`data:image/png;base64,${req.files["foto_profil"][0].buffer.toString('base64')}`, {
+      resource_type: "image",
+      folder: "user_profiles"
+    });
+    foto_profil = result.secure_url;
+  } catch (error) {
+    return res.status(500).json({ message: "Gagal mengunggah foto profil", error: error.message });
+  }
+
+  // Upload foto_ktp ke Cloudinary
   let foto_ktp = null;
-  if (req.files["foto_ktp"]) {
-    try {
-      const result = await cloudinary.uploader.upload(`data:image/png;base64,${req.files["foto_ktp"][0].buffer.toString('base64')}`, {
-        resource_type: "image",
-        folder: "ktp_pictures"
-      });
-      foto_ktp = result.secure_url;
-    } catch (error) {
-      return res.status(500).json({ message: "Gagal mengunggah foto KTP", error: error.message });
-    }
+  try {
+    const result = await cloudinary.uploader.upload(`data:image/png;base64,${req.files["foto_ktp"][0].buffer.toString('base64')}`, {
+      resource_type: "image",
+      folder: "ktp_pictures"
+    });
+    foto_ktp = result.secure_url;
+  } catch (error) {
+    return res.status(500).json({ message: "Gagal mengunggah foto KTP", error: error.message });
   }
 
   try {
@@ -67,7 +67,6 @@ router.post("/register", upload.fields([{ name: "foto_profil" }, { name: "foto_k
       alamat,
       no_hp,
       foto_profil,
-      ktp,
       foto_ktp,
       is_active: false
     });
@@ -77,6 +76,8 @@ router.post("/register", upload.fields([{ name: "foto_profil" }, { name: "foto_k
     res.status(400).json({ message: "Terjadi kesalahan saat mendaftar", error: err.message });
   }
 });
+
+
 
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
