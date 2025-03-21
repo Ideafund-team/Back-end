@@ -34,6 +34,9 @@ const User = sequelize.define("User", {
     type: DataTypes.STRING,
     allowNull: false
   },
+  foto_ktp: {
+    type: DataTypes.STRING
+  },
   is_active: {
     type: DataTypes.BOOLEAN,
     defaultValue: false

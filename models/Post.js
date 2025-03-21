@@ -1,37 +1,47 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database');
+const { DataTypes } = require("sequelize");
+const sequelize = require("../config/database");
 
-const Post = sequelize.define('Post', {
+const Post = sequelize.define(
+  "Post",
+  {
     title: {
-        type: DataTypes.STRING,
-        allowNull: false
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     investment_amount: {
-        type: DataTypes.INTEGER,
-        allowNull: false
+      type: DataTypes.INTEGER,
+      allowNull: false,
     },
     summary: {
-        type: DataTypes.TEXT,
-        allowNull: false
+      type: DataTypes.TEXT,
+      allowNull: false,
     },
     description: {
-        type: DataTypes.TEXT,
-        allowNull: false
+      type: DataTypes.TEXT,
+      allowNull: false,
     },
     image: {
-        type: DataTypes.STRING
+      type: DataTypes.STRING,
     },
     location: {
-        type: DataTypes.STRING
+      type: DataTypes.STRING,
+    },
+    is_verified: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
     },
     investment_available: {
-        type: DataTypes.INTEGER,
-        allowNull: false
+      type: DataTypes.INTEGER,
+      allowNull: false,
     },
     total_investors: {
-        type: DataTypes.JSON,
-        defaultValue: []
-    }
-});
+      type: DataTypes.JSON,
+      defaultValue: [],
+    },
+  },
+  {
+    tableName: "ide", 
+  }
+);
 
 module.exports = Post;

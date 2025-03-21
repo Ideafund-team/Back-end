@@ -8,10 +8,10 @@ const app = express();
 app.use(express.json());
 
 app.use("/auth", authRoutes);
-app.use("/posts", postRoutes);
+app.use("/idea", postRoutes);
 
 sequelize
-  .sync()
+  .sync({ alter: true })
   .then(() => console.log("Database connected!"))
   .catch((err) => console.error("Database error:", err));
 

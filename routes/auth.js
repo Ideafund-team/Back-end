@@ -6,8 +6,7 @@ const jwt = require("jsonwebtoken");
 const cloudinary = require("../config/cloudinary");
 const User = require("../models/User");
 
-
-router.post("/register", upload.single("foto_profil"), async (req, res) => {
+router.post("/register", upload.fields([{ name: "foto_profil" }, { name: "foto_ktp" }]), async (req, res) => {
   const {
     email,
     password,
@@ -33,15 +32,29 @@ router.post("/register", upload.single("foto_profil"), async (req, res) => {
 
   // Upload foto_profil ke Cloudinary jika ada
   let foto_profil = null;
-  if (req.file) {
+  if (req.files["foto_profil"]) {
     try {
-      const result = await cloudinary.uploader.upload(`data:image/png;base64,${req.file.buffer.toString('base64')}`, {
+      const result = await cloudinary.uploader.upload(`data:image/png;base64,${req.files["foto_profil"][0].buffer.toString('base64')}`, {
         resource_type: "image",
         folder: "user_profiles"
       });
       foto_profil = result.secure_url;
     } catch (error) {
-      return res.status(500).json({ message: "Gagal mengunggah gambar", error: error.message });
+      return res.status(500).json({ message: "Gagal mengunggah foto profil", error: error.message });
+    }
+  }
+
+  // Upload foto_ktp ke Cloudinary jika ada
+  let foto_ktp = null;
+  if (req.files["foto_ktp"]) {
+    try {
+      const result = await cloudinary.uploader.upload(`data:image/png;base64,${req.files["foto_ktp"][0].buffer.toString('base64')}`, {
+        resource_type: "image",
+        folder: "ktp_pictures"
+      });
+      foto_ktp = result.secure_url;
+    } catch (error) {
+      return res.status(500).json({ message: "Gagal mengunggah foto KTP", error: error.message });
     }
   }
 
@@ -55,6 +68,7 @@ router.post("/register", upload.single("foto_profil"), async (req, res) => {
       no_hp,
       foto_profil,
       ktp,
+      foto_ktp,
       is_active: false
     });
 
@@ -63,7 +77,6 @@ router.post("/register", upload.single("foto_profil"), async (req, res) => {
     res.status(400).json({ message: "Terjadi kesalahan saat mendaftar", error: err.message });
   }
 });
-
 
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
