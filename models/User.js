@@ -34,6 +34,7 @@ const User = sequelize.define("User", {
     defaultValue: false
   }
 }, {
+  tableName: "users",
   timestamps: true,  // Menambahkan `created_at` dan `updated_at` otomatis
   createdAt: 'created_at', // Sesuai dengan struktur database Anda
   updatedAt: false         // Karena tidak ada kolom `updated_at` di database

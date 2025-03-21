@@ -20,6 +20,10 @@ const Post = sequelize.define(
       type: DataTypes.TEXT,
       allowNull: false,
     },
+    status: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
     image: {
       type: DataTypes.STRING,
     },
@@ -27,8 +31,8 @@ const Post = sequelize.define(
       type: DataTypes.STRING,
     },
     is_verified: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
     },
     investment_available: {
       type: DataTypes.INTEGER,
@@ -38,9 +42,22 @@ const Post = sequelize.define(
       type: DataTypes.JSON,
       defaultValue: [],
     },
+    created_at: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW, // Gunakan NOW agar otomatis mengisi dengan waktu saat ini
+    },
+    updated_at: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW, 
+    },
   },
   {
     tableName: "ide", 
+    timestamps: true,         // Menambahkan `createdAt` dan `updatedAt`
+    createdAt: 'created_at',  // Kolom untuk `createdAt`
+    updatedAt: 'updated_at',  // Kolom untuk `updatedAt`
   }
 );
 

@@ -4,6 +4,11 @@ const Post = require("../models/Post");
 const User = require("../models/User");
 const upload = require("../middleware/upload"); // Asumsi ini middleware untuk upload
 const cloudinary = require("../config/cloudinary"); // Asumsi ini konfigurasi Cloudinary
+const adminAuth = require("../middleware/adminauth"); 
+const auth = require("../middleware/auth");
+const userAuth = require("../middleware/userAuth");
+
+
 
 const router = express.Router();
 
@@ -64,6 +69,74 @@ router.get("/", async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: "Gagal mengambil data postingan." });
   }
+});
+
+
+// Route untuk verifikasi postingan
+router.put("/", adminAuth, async (req, res) => {
+    console.log("Request body:", req.body);
+
+    const { id, is_verified } = req.body;
+
+    try {
+        const post = await Post.findByPk(id);
+        if (!post) {
+            console.log("Post not found");
+            return res.status(404).json({ message: "Post not found" });
+        }
+
+        await Post.update(
+            { is_verified: is_verified },
+            { where: { id } }
+        );
+
+        const updatedPost = await Post.findByPk(id);
+
+        res.status(200).json({
+            message: "Post verified successfully",
+            post: updatedPost
+        });
+    } catch (err) {
+        console.error("Error details:", err);
+        res.status(500).json({
+            error: "Failed to verify post",
+            details: err.message
+        });
+    }
+});
+
+// ubah status ide
+
+router.put("/", userAuth, async (req, res) => {
+    console.log("Request body:", req.body);
+
+    const { id, status } = req.body;
+
+    try {
+        const post = await Post.findByPk(id);
+        if (!post) {
+            console.log("Post not found");
+            return res.status(404).json({ message: "Post not found" });
+        }
+
+        await Post.update(
+            { status: status },
+            { where: { id } }
+        );
+
+        const updatedPost = await Post.findByPk(id);
+
+        res.status(200).json({
+            message: "Post status updated successfully",
+            post: updatedPost
+        });
+    } catch (err) {
+        console.error("Error details:", err);
+        res.status(500).json({
+            error: "Failed to update post status",
+            details: err.message
+        });
+    }
 });
 
 module.exports = router;

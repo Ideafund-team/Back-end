@@ -5,6 +5,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const cloudinary = require("../config/cloudinary");
 const User = require("../models/User");
+const Admin = require("../models/Admin");
 
 router.post("/register", upload.fields([{ name: "foto_profil" }, { name: "foto_ktp" }]), async (req, res) => {
   const {
@@ -91,5 +92,74 @@ router.post("/login", async (req, res) => {
   const token = jwt.sign({ id: user.id }, "secretkey", { expiresIn: "1h" });
   res.json({ token });
 });
+
+
+// Endpoint untuk Register Admin
+router.post("/admin/register", async (req, res) => {
+  const { email, password } = req.body;
+
+  // Validasi input
+  if (!email || !password) {
+      return res.status(400).json({ error: "Email dan password wajib diisi." });
+  }
+
+  try {
+      // Cek apakah email sudah digunakan
+      const existingAdmin = await Admin.findOne({ where: { email } });
+      if (existingAdmin) {
+          return res.status(400).json({ error: "Email sudah terdaftar." });
+      }
+
+      // Hash password sebelum disimpan ke database
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      // Buat admin baru
+      const newAdmin = await Admin.create({
+          email,
+          password: hashedPassword
+      });
+
+      res.status(201).json({ message: "Admin berhasil didaftarkan.", admin: newAdmin });
+  } catch (error) {
+      res.status(500).json({ error: "Gagal mendaftarkan admin.", details: error.message });
+  }
+});
+
+
+// Endpoint untuk Login Admin
+router.post("/admin/login", async (req, res) => {
+  const { email, password } = req.body;
+
+  // Validasi input
+  if (!email || !password) {
+      return res.status(400).json({ error: "Email dan password wajib diisi." });
+  }
+
+  try {
+      // Cari admin berdasarkan email
+      const admin = await Admin.findOne({ where: { email } });
+
+      // Cek jika admin tidak ditemukan
+      if (!admin) {
+          return res.status(404).json({ error: "Admin tidak ditemukan." });
+      }
+
+      // Verifikasi password
+      const isMatch = await bcrypt.compare(password, admin.password);
+      if (!isMatch) {
+          return res.status(401).json({ error: "Email atau password salah." });
+      }
+
+      // Buat token JWT
+      const token = jwt.sign({ id: admin.id, email: admin.email }, process.env.JWT_SECRET, {
+          expiresIn: "1h"
+      });
+
+      res.status(200).json({ message: "Login berhasil.", token });
+  } catch (error) {
+      res.status(500).json({ error: "Terjadi kesalahan pada server.", details: error.message });
+  }
+});
+
 
 module.exports = router;
