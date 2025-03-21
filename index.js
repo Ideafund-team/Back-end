@@ -12,7 +12,11 @@ app.use("/auth", authRoutes);
 app.use("/idea", postRoutes);
 app.use("/verify", postRoutes);
 app.use("/active", userRoutes);
-app.use("/status", postRoutes); 
+app.use("/status", userRoutes); // Endpoint untuk ubah status
+app.use("/user", userRoutes);
+app.use("/alluser", userRoutes);
+app.use("/userbyactive", userRoutes);  
+
 
 sequelize
   .sync({ alter: true }) // Perbarui tabel tanpa menghapus data 

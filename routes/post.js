@@ -8,8 +8,6 @@ const adminAuth = require("../middleware/adminauth");
 const auth = require("../middleware/auth");
 
 
-
-
 const router = express.Router();
 
 // Endpoint untuk membuat postingan baru
@@ -104,8 +102,6 @@ router.put("/", adminAuth, async (req, res) => {
         });
     }
 });
-
-// ubah status ide
 
 
 module.exports = router;
