@@ -4,6 +4,7 @@ const User = require("../models/User");
 const auth = require("../middleware/auth");
 const { validate: isUuid } = require("uuid"); // Import metode validasi UUID
 const { Sequelize } = require('sequelize'); // Impor Sequelize
+const { Op } = require("sequelize"); // Import Op untuk pencarian case-insensitive
 
 const router = express.Router();
 
@@ -109,8 +110,20 @@ router.put("/", auth, async (req, res) => {
 router.get("/:id", async (req, res) => {
     const { id } = req.params;
 
+    // Gunakan .trim() untuk menghindari spasi yang tidak disengaja pada ID
+    const trimmedId = id.trim();
+
+    // Validasi ID sebagai UUID
+    if (!/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(trimmedId)) {
+        return res.status(400).json({ message: "Invalid UUID format." });
+    }
+
     try {
-        const user = await User.findByPk(id); // Cari user berdasarkan ID
+        const user = await User.findOne({
+            where: {
+                id: { [Op.eq]: trimmedId } // Pencarian tepat dengan UUID di MySQL
+            }
+        });
 
         if (!user) {
             return res.status(404).json({ message: "User not found" });
