@@ -6,6 +6,7 @@ const jwt = require("jsonwebtoken");
 const cloudinary = require("../config/cloudinary");
 const User = require("../models/User");
 const Admin = require("../models/Admin");
+const { v4: uuidv4 } = require("uuid"); // Library untuk generate UUID
 
 router.post("/register", upload.fields([{ name: "foto_profil" }, { name: "foto_ktp" }]), async (req, res) => {
   const {
@@ -90,8 +91,12 @@ router.post("/login", async (req, res) => {
   if (!validPassword) return res.status(400).json({ message: "Password salah!" });
 
   const token = jwt.sign({ id: user.id }, "secretkey", { expiresIn: "1h" });
-  res.json({ token });
+  res.json({
+    token,
+    id: user.id  // Menambahkan ID user pada respons
+  });
 });
+
 
 
 // Endpoint untuk Register Admin

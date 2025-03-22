@@ -1,11 +1,18 @@
 const { DataTypes } = require("sequelize");
+const { v4: uuidv4 } = require("uuid"); // Library untuk generate UUID
 const sequelize = require("../config/database");
 
 const User = sequelize.define("User", {
+  id: {
+    type: DataTypes.STRING,  // Ubah tipe data ke UUID
+    defaultValue: DataTypes.UUIDV4, // Auto-generate UUID
+    unique: true
+  },
   email: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true
+    unique: true,
+    primaryKey: true
   },
   password: {
     type: DataTypes.STRING,
@@ -35,9 +42,11 @@ const User = sequelize.define("User", {
   }
 }, {
   tableName: "users",
-  timestamps: true,  // Menambahkan `created_at` dan `updated_at` otomatis
-  createdAt: 'created_at', // Sesuai dengan struktur database Anda
-  updatedAt: false         // Karena tidak ada kolom `updated_at` di database
+  timestamps: true,
+  createdAt: 'created_at',
+  updatedAt: false
 });
+
+
 
 module.exports = User;

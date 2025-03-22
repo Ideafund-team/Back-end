@@ -2,6 +2,8 @@ const express = require("express");
 const adminAuth = require("../middleware/adminauth");
 const User = require("../models/User");
 const auth = require("../middleware/auth");
+const { validate: isUuid } = require("uuid"); // Import metode validasi UUID
+const { Sequelize } = require('sequelize'); // Impor Sequelize
 
 const router = express.Router();
 
@@ -11,8 +13,22 @@ router.put("/", adminAuth, async (req, res) => {
 
     const { id, is_active } = req.body;
 
+    // Gunakan .trim() untuk menghindari spasi yang tidak disengaja pada ID
+    const trimmedId = id.trim();
+
+    // Validasi ID sebagai UUID
+    if (!isUuid(trimmedId)) {
+        return res.status(400).json({ message: "Invalid ID format. ID harus berupa UUID." });
+    }
+
     try {
-        const user = await User.findByPk(id);
+        const user = await User.findOne({
+            where: Sequelize.where(
+                Sequelize.fn('LOWER', Sequelize.col('id')), 
+                trimmedId.toLowerCase()
+            )
+        });
+
         if (!user) {
             console.log("User not found");
             return res.status(404).json({ message: "User not found" });
@@ -20,10 +36,20 @@ router.put("/", adminAuth, async (req, res) => {
 
         await User.update(
             { is_active: is_active },
-            { where: { id } }
+            {
+                where: Sequelize.where(
+                    Sequelize.fn('LOWER', Sequelize.col('id')),
+                    trimmedId.toLowerCase()
+                )
+            }
         );
 
-        const updatedUser = await User.findByPk(id);
+        const updatedUser = await User.findOne({
+            where: Sequelize.where(
+                Sequelize.fn('LOWER', Sequelize.col('id')), 
+                trimmedId.toLowerCase()
+            )
+        });
 
         res.status(200).json({
             message: "User activated successfully",
@@ -37,6 +63,8 @@ router.put("/", adminAuth, async (req, res) => {
         });
     }
 });
+
+
 
 // Endpoint untuk pengguna mengubah status ide menjadi "1" (available)
 router.put("/", auth, async (req, res) => {
