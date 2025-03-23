@@ -6,6 +6,7 @@ const jwt = require("jsonwebtoken");
 const cloudinary = require("../config/cloudinary");
 const User = require("../models/User");
 const Admin = require("../models/Admin");
+const adminAuth = require("../middleware/adminauth");
 const { v4: uuidv4 } = require("uuid"); // Library untuk generate UUID
 
 router.post("/register", upload.fields([{ name: "foto_profil" }, { name: "foto_ktp" }]), async (req, res) => {

@@ -13,7 +13,8 @@ const router = express.Router();
 // Endpoint untuk membuat postingan baru
 router.post("/", upload.single("image"), async (req, res) => {
   const { 
-      title, 
+      title,
+      id_user,
       summary, 
       description, 
       location, 
@@ -22,7 +23,7 @@ router.post("/", upload.single("image"), async (req, res) => {
   } = req.body;
 
   // Validasi data yang diperlukan (image tidak wajib)
-  if (!title || !summary || !description || !location || !investment_available || !investment_amount) {
+  if (!title || !id_user ||!summary || !description || !location || !investment_available || !investment_amount) {
       return res.status(400).json({ error: "Kolom belum terisi dengan lengkap." });
   }
 
@@ -41,6 +42,7 @@ router.post("/", upload.single("image"), async (req, res) => {
 
   try {
       const post = await Post.create({
+          id_user,
           title,
           status: 0, // Default value
           summary,
@@ -49,8 +51,7 @@ router.post("/", upload.single("image"), async (req, res) => {
           location,
           is_verified: 0, // Default value
           investment_available,
-          investment_amount,
-          total_investors: [] // Array kosong saat ide pertama kali dibuat
+          investment_amount
       });
 
       res.status(201).json(post);
@@ -102,6 +103,54 @@ router.put("/", adminAuth, async (req, res) => {
         });
     }
 });
+
+// GET ide berdasarkan ID
+router.get("/:id", async (req, res) => {
+    const { id } = req.params;
+
+    // Validasi ID sebagai angka
+    if (!/^\d+$/.test(id)) {
+        return res.status(400).json({ message: "Invalid ID format. ID harus berupa angka." });
+    }
+
+    try {
+        const idea = await Post.findByPk(id); // Cari data berdasarkan ID
+
+        if (!idea) {
+            return res.status(404).json({ message: "Idea not found" });
+        }
+
+        res.status(200).json(idea);
+    } catch (error) {
+        console.error("Error fetching idea:", error);
+        res.status(500).json({
+            error: "Failed to retrieve idea",
+            details: error.message
+        });
+    }
+});
+
+// Endpoint untuk menghapus user berdasarkan UUID (hanya admin yang bisa)
+router.delete("/:id", adminAuth, async (req, res) => {
+    const { id } = req.params;  // Ubah dari uuid ke id
+
+    try {
+        const user = await User.findOne({ where: { id } });  // Ubah dari uuid ke id
+
+        if (!user) {
+            return res.status(404).json({ message: "User tidak ditemukan" });
+        }
+
+        await user.destroy();
+        res.status(200).json({ message: "User berhasil dihapus" });
+    } catch (error) {
+        console.error("Error deleting user:", error);
+        res.status(500).json({ message: "Gagal menghapus user", error: error.message });
+    }
+});
+
+
+
 
 
 module.exports = router;

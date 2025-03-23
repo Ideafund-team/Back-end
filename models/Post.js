@@ -38,10 +38,6 @@ const Post = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    total_investors: {
-      type: DataTypes.JSON,
-      defaultValue: [],
-    },
     created_at: {
       type: DataTypes.DATE,
       allowNull: false,

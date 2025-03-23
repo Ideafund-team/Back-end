@@ -4,7 +4,9 @@ const sequelize = require("./config/database");
 const authRoutes = require("./routes/auth");
 const postRoutes = require("./routes/post");
 const userRoutes = require("./routes/user"); 
-
+const deleteIdeaRoutes = require("./routes/deleteidea");
+const updateuserRoutes = require("./routes/updateuser"); 
+const postInvestorRoutes = require("./routes/postinvestor");
 const app = express();
 
 // Gunakan middleware CORS
@@ -25,6 +27,16 @@ app.use("/status", userRoutes);
 app.use("/user", userRoutes);
 app.use("/alluser", userRoutes);
 app.use("/userbyactive", userRoutes);
+app.use("/ideabyid", postRoutes);
+app.use("/idea", postRoutes);
+app.use("/user", postRoutes);
+app.use("/deleteidea", deleteIdeaRoutes); 
+app.use("/update", updateuserRoutes);
+app.use("/investor", postInvestorRoutes);
+app.use("/getinvestorbyowner", postInvestorRoutes);
+app.use("/getallinvestor", postInvestorRoutes);
+app.use("/getinvestoride", postInvestorRoutes);
+app.use("/updatestatus", postInvestorRoutes);
 
 sequelize
   .sync({ alter: true }) // Perbarui tabel tanpa menghapus data 
