@@ -89,7 +89,7 @@ router.post("/login", async (req, res) => {
   if (!user) return res.status(400).json({ message: "User tidak ditemukan!" });
 
   const validPassword = await bcrypt.compare(password, user.password);
-  if (!validPassword) return res.status(400).json({ message: "Password salah!" });
+  if (!validPassword) return res.status(400).json({ message: "Email atau Password salah!" });
 
   const token = jwt.sign({ id: user.id }, "secretkey", { expiresIn: "1h" });
   res.json({

@@ -1,5 +1,4 @@
 const express = require("express");
-const authenticate = require("../middleware/auth");
 const Post = require("../models/Post");
 const User = require("../models/User");
 const upload = require("../middleware/upload"); // Asumsi ini middleware untuk upload
@@ -11,19 +10,20 @@ const auth = require("../middleware/auth");
 const router = express.Router();
 
 // Endpoint untuk membuat postingan baru
-router.post("/", upload.single("image"), async (req, res) => {
+router.post("/", upload.single("image"), auth,async (req, res) => {
   const { 
       title,
-      id_user,
-      summary, 
+      kategori,
+      id_owner,
+      summary,
       description, 
-      location, 
+      location,
       investment_available, 
       investment_amount
   } = req.body;
 
   // Validasi data yang diperlukan (image tidak wajib)
-  if (!title || !id_user ||!summary || !description || !location || !investment_available || !investment_amount) {
+  if (!title || !kategori || !id_owner ||!summary || !description || !location || !investment_available || !investment_amount) {
       return res.status(400).json({ error: "Kolom belum terisi dengan lengkap." });
   }
 
@@ -42,8 +42,9 @@ router.post("/", upload.single("image"), async (req, res) => {
 
   try {
       const post = await Post.create({
-          id_user,
+          id_owner,
           title,
+          kategori,
           status: 0, // Default value
           summary,
           description,
