@@ -20,6 +20,8 @@ app.use(cors({
 
 app.use(express.json());
 
+
+
 // Definisi route
 app.use("/auth", authRoutes);
 app.use("/idea", postRoutes);
