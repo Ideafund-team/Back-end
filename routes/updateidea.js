@@ -9,7 +9,7 @@ const router = express.Router();
 // Endpoint untuk update data ide berdasarkan ID
 router.put("/ide/:id", auth, async (req, res) => {
     const { id } = req.params;
-    const { title, investment_amount, summary, description, status, location, investment_available, total_investors } = req.body;
+    const { title, investment_amount, summary, description, location, investment_available } = req.body;
 
     // Validasi ID agar hanya berupa angka
     if (!/^\d+$/.test(id.trim())) {
@@ -50,10 +50,8 @@ router.put("/ide/:id", auth, async (req, res) => {
             summary: summary?.trim() || existingPost.summary,
             description: description?.trim() || existingPost.description,
             image, // Gambar yang baru saja diunggah atau gambar lama
-            status: status?.trim() || existingPost.status,
             location: location?.trim() || existingPost.location,
             investment_available: investment_available || existingPost.investment_available,
-            total_investors: total_investors || existingPost.total_investors
         }, {
             where: { id: id }
         });

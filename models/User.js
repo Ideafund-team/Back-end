@@ -6,7 +6,6 @@ const User = sequelize.define("User", {
   id: {
     type: DataTypes.STRING,  // Ubah tipe data ke UUID
     defaultValue: DataTypes.UUIDV4, // Auto-generate UUID
-    unique: true
   },
   email: {
     type: DataTypes.STRING,

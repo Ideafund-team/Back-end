@@ -63,12 +63,21 @@ router.post("/", upload.single("image"), auth,async (req, res) => {
 
 // Endpoint untuk mendapatkan semua postingan
 router.get("/", async (req, res) => {
-  try {
-    const posts = await Post.findAll({ include: User });
-    res.json(posts);
-  } catch (err) {
-    res.status(500).json({ error: "Gagal mengambil data postingan." });
-  }
+    try {
+        const allIdeas = await Post.findAll();
+        
+        if (!allIdeas || allIdeas.length === 0) {
+            return res.status(404).json({ message: "Data ide tidak ditemukan." });
+        }
+
+        res.status(200).json(allIdeas);
+    } catch (error) {
+        console.error("Error saat mengambil data ide:", error);
+        res.status(500).json({
+            error: "Terjadi kesalahan saat mengambil data ide.",
+            details: error.message
+        });
+    }
 });
 
 
