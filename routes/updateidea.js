@@ -10,7 +10,7 @@ const router = express.Router();
 // Endpoint untuk update data ide berdasarkan ID
 router.put("/ide/:id", auth, upload.single("image"), async (req, res) => {
     const { id } = req.params;
-    const { title, investment_amount, summary, description, location, kategori } = req.body;
+    const { title, investment_amount, summary, description, location, kategori, status } = req.body;
 
     if (!/^\d+$/.test(id.trim())) {
         return res.status(400).json({ message: "ID harus berupa angka" });
@@ -57,6 +57,7 @@ router.put("/ide/:id", auth, upload.single("image"), async (req, res) => {
             image,
             location: location?.trim() || existingPost.location,
             kategori: kategori || existingPost.kategori,
+            status: status || existingPost.status
         });
 
         console.log("Data yang diterima:", req.body);
