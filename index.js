@@ -11,9 +11,11 @@ const getidfromowner = require("./routes/getididea");
 const updateideaRoutes = require("./routes/updateidea");
 const app = express();
 
+const port = process.env.PORT || 8080;
+
 // Gunakan middleware CORS
 app.use(cors({
-    origin: '', // Sesuaikan dengan URL frontend Anda
+    origin: 'http://localhost:3000', // Sesuaikan dengan URL frontend Anda
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
@@ -49,4 +51,6 @@ sequelize
   .then(() => console.log("Database connected!"))
   .catch((err) => console.error("Database error:", err));
 
-app.listen(8080, () => console.log("Server running on port 8080"));
+  app.listen(port, () => {
+    console.log(`Example app listening on port ${port}`);
+  });
