@@ -1,12 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const Post = require("../models/Post");
-const adminAuth = require("../middleware/adminauth"); 
+const auth = require("../middleware/auth");
 
 
 
 //delete idea by id
-router.delete("/:id", adminAuth, async (req, res) => {
+router.delete("/:id", auth, async (req, res) => {
     const { id } = req.params;  // Ambil ID dari URL
 
     try {

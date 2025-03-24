@@ -13,6 +13,7 @@ const router = express.Router();
 router.post("/", upload.single("image"), auth,async (req, res) => {
   const { 
       title,
+      status,
       kategori,
       id_owner,
       summary,
@@ -23,7 +24,7 @@ router.post("/", upload.single("image"), auth,async (req, res) => {
   } = req.body;
 
   // Validasi data yang diperlukan (image tidak wajib)
-  if (!title || !kategori || !id_owner ||!summary || !description || !location || !investment_available || !investment_amount) {
+  if (!title || !status || !kategori || !id_owner ||!summary || !description || !location || !investment_available || !investment_amount) {
       return res.status(400).json({ error: "Kolom belum terisi dengan lengkap." });
   }
 
@@ -45,7 +46,7 @@ router.post("/", upload.single("image"), auth,async (req, res) => {
           id_owner,
           title,
           kategori,
-          status: 0, // Default value
+          status, 
           summary,
           description,
           image,
