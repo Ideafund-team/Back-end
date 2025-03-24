@@ -13,7 +13,7 @@ const app = express();
 
 // Gunakan middleware CORS
 app.use(cors({
-    origin: 'http://localhost:3000', // Sesuaikan dengan URL frontend Anda
+    origin: '', // Sesuaikan dengan URL frontend Anda
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
@@ -49,4 +49,4 @@ sequelize
   .then(() => console.log("Database connected!"))
   .catch((err) => console.error("Database error:", err));
 
-app.listen(3000, () => console.log("Server running on port 3000"));
+app.listen(8080, () => console.log("Server running on port 8080"));
